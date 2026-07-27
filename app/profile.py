@@ -186,7 +186,7 @@ with col_2:
                         INSERT INTO favorites(song_id)
                         VALUES (?)
                     """,
-                    (f"spotify:track:{selected_id}",)
+                    (selected_id,)
                 )
 
                 conn.commit()
