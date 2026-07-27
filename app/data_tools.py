@@ -97,7 +97,7 @@ def insert_listening_data(dbpath):
 # Gets extra information from cached files from the Spotify API
 # Extra note - the Spotify API is only accessible to users with a Premium subscription (I do not have that). I am using cached files I created before that restriction was in place.
 def gather_artist_song_info(df):
-    with lzma.open("spotify_track_features.pkl.xz", "rb") as f:
+    with lzma.open("data/spotify_track_features.pkl.xz", "rb") as f:
         track_features = pickle.load(f)
 
     df_tracks = pd.DataFrame(track_features)
@@ -107,7 +107,7 @@ def gather_artist_song_info(df):
 
     df_merged['artist_id'] = df_merged['artists'].apply(lambda x: x[0].get("id") if isinstance(x, list) and len(x) > 0 else None)
 
-    with lzma.open("spotify_artists.pkl.xz", "rb") as f:
+    with lzma.open("data/spotify_artists.pkl.xz", "rb") as f:
         artist_info = pickle.load(f)
 
     df_artists = pd.DataFrame(artist_info)
