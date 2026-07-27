@@ -182,12 +182,11 @@ def insert_song_info(df, dbpath):
 @st.cache_resource
 def implement_data_insert():
     dbpath = 'finalDB.sqlite'
-    if os.path.exists(dbpath):
-        os.remove(dbpath)
-    create_database(dbpath)
+    if not os.path.exists(dbpath):
+        create_database(dbpath)
 
-    df_1 = insert_listening_data(dbpath)
-    df_2 = gather_artist_song_info(df_1)
-    insert_artist(df_2, dbpath)
-    insert_song_info(df_2, dbpath)
+        df_1 = insert_listening_data(dbpath)
+        df_2 = gather_artist_song_info(df_1)
+        insert_artist(df_2, dbpath)
+        insert_song_info(df_2, dbpath)
 
