@@ -70,7 +70,7 @@ def insert_listening_data(dbpath):
     conn = sqlite3.connect(dbpath)
     cursor = conn.cursor()
 
-    json_files = glob.glob("*.json")
+    json_files = glob.glob("data/*.json")
 
     dfs = []
     for file in json_files:
