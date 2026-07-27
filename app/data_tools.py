@@ -82,6 +82,8 @@ def insert_listening_data(dbpath):
     full_df = pd.concat(dfs, ignore_index=True)
     df = full_df.sort_values(by='ts')
 
+    df["spotify_track_uri"] = df["spotify_track_uri"].str.replace("spotify:track:", "")
+
     listening_rows = df[['spotify_track_uri', 'ts', 'skipped']].values.tolist()
 
     cursor.executemany("""
@@ -103,6 +105,7 @@ def gather_artist_song_info(df):
     df_tracks = pd.DataFrame(track_features)
     df_tracks.rename(columns={"uri": "spotify_track_uri"}, inplace=True)
     df_tracks_deduped = df_tracks.drop_duplicates(subset='spotify_track_uri')
+    df_tracks_deduped["spotify_track_uri"] = df_tracks_deduped["spotify_track_uri"].str.replace("spotify:track:", "")
     df_merged = df.merge(df_tracks_deduped, on="spotify_track_uri", how="left")
 
     df_merged['artist_id'] = df_merged['artists'].apply(lambda x: x[0].get("id") if isinstance(x, list) and len(x) > 0 else None)
@@ -179,12 +182,10 @@ def insert_song_info(df, dbpath):
 @st.cache_resource
 def implement_data_insert():
     dbpath = 'finalDB.sqlite'
-    if os.path.exists(dbpath):
-        os.remove(dbpath)
-    create_database(dbpath)
-
-    df_1 = insert_listening_data(dbpath)
-    df_2 = gather_artist_song_info(df_1)
-    insert_artist(df_2, dbpath)
-    insert_song_info(df_2, dbpath)
+    if not os.path.exists(dbpath):
+        create_database(dbpath)
+        df_1 = insert_listening_data(dbpath)
+        df_2 = gather_artist_song_info(df_1)
+        insert_artist(df_2, dbpath)
+        insert_song_info(df_2, dbpath)
 

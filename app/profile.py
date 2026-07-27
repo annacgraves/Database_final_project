@@ -115,7 +115,7 @@ with col_2:
                 c.popularity AS Popularity
             FROM favorites a
             JOIN songs b
-            ON REPLACE(a.song_id,'spotify:track:','') = b.id
+            ON a.song_id = b.id
             JOIN artist c
             ON b.artist_id = c.id
         """, conn

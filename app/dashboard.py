@@ -11,7 +11,7 @@ def load_data():
         SELECT a.name, a.genre, a.popularity, a.followers
         FROM artist a
         LEFT JOIN songs b ON b.artist_id = a.id
-        LEFT JOIN listening c ON CONCAT('spotify:track:', b.id) = c.song_id
+        LEFT JOIN listening c ON b.id = c.song_id
         WHERE c.ts >= datetime('2025-05-29T01:49:40Z', '-1 month')
         GROUP BY a.name, a.genre, a.popularity, a.followers
         """, conn)
@@ -20,7 +20,7 @@ def load_data():
     genre = pd.read_sql("""
         SELECT c.genre
         FROM listening a
-        LEFT JOIN songs b ON CONCAT('spotify:track:', b.id) = a.song_id
+        LEFT JOIN songs b ON b.id = a.song_id
         LEFT JOIN artist c
             ON b.artist_id = c.id
         WHERE c.genre IS NOT NULL
@@ -30,7 +30,7 @@ def load_data():
     top_artist = pd.read_sql("""
         SELECT c.name
         FROM listening a
-        LEFT JOIN songs b ON CONCAT('spotify:track:', b.id) = a.song_id
+        LEFT JOIN songs b ON b.id = a.song_id
         LEFT JOIN artist c ON b.artist_id = c.id
         WHERE a.ts >= datetime('2025-05-29T01:49:40Z', '-1 month')
         GROUP BY c.name
@@ -41,7 +41,7 @@ def load_data():
     top_song = pd.read_sql("""
         SELECT COUNT(a.id), b.name as song, c.name as artist
         FROM listening a
-        LEFT JOIN songs b ON CONCAT('spotify:track:', b.id) = a.song_id
+        LEFT JOIN songs b ON b.id = a.song_id
         LEFT JOIN artist c ON b.artist_id = c.id
         WHERE a.ts >= datetime('2025-05-29T01:49:40Z', '-1 month')
         GROUP BY b.name, c.name
