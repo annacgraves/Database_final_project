@@ -78,7 +78,10 @@ with col_1:
 
     my_genre_list = my_genres["genre"].tolist()
 
-    conditions = " OR ".join(["b.genre LIKE ?"] * len(my_genre_list))
+    if len(my_genre_list) > 0:
+        conditions = 'WHERE ' + " OR ".join(["b.genre LIKE ?"] * len(my_genre_list))
+    else:
+        conditions = ""
 
     params = [f"%{genre}%" for genre in my_genre_list]
 
@@ -87,7 +90,7 @@ with col_1:
         SELECT a.name as song, b.name as artist, b.genre as 'genre(s)'
         FROM songs a
         LEFT JOIN artist b ON a.artist_id = b.id
-        WHERE {conditions}
+        {conditions}
         ORDER BY RANDOM()
         LIMIT 15;
         """,
